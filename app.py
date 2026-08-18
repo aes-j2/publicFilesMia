@@ -147,6 +147,7 @@ def mark_read(letter_id, read=True):
 # 편지 카드 (진행자/대시보드 공용)
 # ─────────────────────────────────────────────
 def render_letter_card(letter, compact=False):
+    st.write(letter)
     to_raw = letter["recipient"].strip()
     from_raw = letter["sender"].strip()
     to_line = f"받는 사람: {html.escape(to_raw)}" if to_raw else "받는 사람: (익명)"
