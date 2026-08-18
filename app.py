@@ -162,8 +162,8 @@ def render_letter_card(letter, compact=False):
     to_raw = letter["recipient"].strip()
     from_raw = letter["sender"].strip()
     to_line = f"받는 사람: {html.escape(to_raw)}" if to_raw else "받는 사람: (익명)"
-    from_line = f"— {html.escape(from_raw)}" if from_raw else "— 익명의 누군가"
-    body = html.escape(letter["body"])
+    from_line = f"보낸 사람: {html.escape(from_raw)}" if from_raw else "보낸 사람: 익명의 누군가"
+    body = html.escape(letter["body"])https://github.com/aes-j2/publicFilesMia/blob/main/app.py
 
     font = "1.0rem" if compact else "1.15rem"
     pad = "20px" if compact else "28px"
