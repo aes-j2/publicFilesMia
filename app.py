@@ -147,22 +147,25 @@ def mark_read(letter_id, read=True):
 # 편지 카드 (진행자/대시보드 공용)
 # ─────────────────────────────────────────────
 def render_letter_card(letter, compact=False):
-    st.write(letter)
     to_raw = letter["recipient"].strip()
     from_raw = letter["sender"].strip()
     to_line = f"받는 사람: {html.escape(to_raw)}" if to_raw else "받는 사람: (익명)"
     from_line = f"보낸 사람: {html.escape(from_raw)}" if from_raw else "보낸 사람: 익명의 누군가"
-    body = html.escape(letter["body"]).replace("/n", "<br>")
+    body = html.escape(letter["body"]).replace("\n", "<br>")  # 줄바꿈을 <br>로
     font = "1.0rem" if compact else "1.15rem"
     pad = "20px" if compact else "28px"
 
-    card=f"""<div style="background:#fff8e7;border-radius:16px;padding:{pad};margin-bottom:16px;
-                    border:1px solid #f0e0b0;font-size:{font};line-height:1.9;">
-            <div style="color:#8a6d1a;margin-bottom:12px;">{to_line}</div>
-            <div style="white-space:pre-wrap;">{body}</div>
-            <div style="text-align:right;margin-top:18px;color:#8a6d1a;">{from_line}</div>
-        </div>"""
-    st.markdown(card,unsafe_allow_html=True)
+    # ★ HTML은 들여쓰기 없이 한 줄로 이어붙인다 (이게 핵심)
+    card = (
+        f'<div style="background:#fff8e7;border-radius:16px;padding:{pad};'
+        f'margin-bottom:16px;border:1px solid #f0e0b0;font-size:{font};line-height:1.9;">'
+        f'<div style="color:#8a6d1a;margin-bottom:12px;">{to_line}</div>'
+        f'<div>{body}</div>'
+        f'<div style="text-align:right;margin-top:18px;color:#8a6d1a;">{from_line}</div>'
+        f'</div>'
+    )
+    st.markdown(card, unsafe_allow_html=True)
+
 
 
 
