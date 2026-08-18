@@ -186,13 +186,13 @@ def render_letter_card(letter, compact=False):
 # ─────────────────────────────────────────────
 def submit_view():
     st.title(EVENT_TITLE)
-    st.caption("이름을 안 적어도 괜찮아요. 하고 싶었던 말을 익명으로 남겨주세요 🙂")
+    st.caption("하고 싶었던 말을 익명으로 남겨주세요 🙂")
 
     with st.form("letter_form", clear_on_submit=True):
         recipient = st.text_input("받는 사람 (선택)", placeholder="예: 우리 연구실 동기들에게")
         body = st.text_area("전하고 싶은 말", height=200,
-                            placeholder="칭찬, 감사, 못 했던 말 무엇이든 좋아요.")
-        sender = st.text_input("보내는 사람 별명 (선택)", placeholder="비워두면 완전 익명")
+                            placeholder="칭찬, 감사, 못 했던 말 무엇이든 좋아요!")
+        sender = st.text_input("보내는 사람 별명 (선택)", placeholder="비워 두면 익명으로 전달됩니다")
         submitted = st.form_submit_button("편지 보내기 ✉️", use_container_width=True)
 
     if submitted:
@@ -200,7 +200,7 @@ def submit_view():
             st.warning("편지 내용을 적어주세요!")
         else:
             add_letter(recipient, sender, body)
-            st.success("편지가 잘 도착했어요! 방송에서 만나요 📻")
+            st.success("편지가 잘 도착했어요! 📮")
             st.balloons()
 
 
@@ -288,11 +288,33 @@ def board_view():
 # ─────────────────────────────────────────────
 # 메인: 화면 선택
 # ─────────────────────────────────────────────
+def _sidebar_nav(current):
+    """왼쪽 사이드바에 화면 이동 버튼. 참가자에겐 기본으로 접혀 있음."""
+    with st.sidebar:
+        st.markdown("### 🧭 화면 이동")
+        st.caption("진행자 / 빔 화면은 여기서 이동하세요.")
+        if st.button("✍️ 편지 쓰기 (참가자)", use_container_width=True,
+                     type="primary" if current == "submit" else "secondary"):
+            st.query_params["mode"] = "submit"
+            st.rerun()
+        if st.button("🎙️ 진행자 화면", use_container_width=True,
+                     type="primary" if current == "host" else "secondary"):
+            st.query_params["mode"] = "host"
+            st.rerun()
+        if st.button("📮 대시보드 (빔)", use_container_width=True,
+                     type="primary" if current == "board" else "secondary"):
+            st.query_params["mode"] = "board"
+            st.rerun()
+
+
 def main():
-    st.set_page_config(page_title=EVENT_TITLE, page_icon="📮", layout="wide")
+    st.set_page_config(page_title=EVENT_TITLE, page_icon="📮",
+                       layout="wide", initial_sidebar_state="collapsed")
     init_db()
 
     mode = st.query_params.get("mode", "submit")
+    _sidebar_nav(mode)
+
     if mode == "host":
         host_view()
     elif mode == "board":
