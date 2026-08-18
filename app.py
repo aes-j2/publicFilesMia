@@ -276,7 +276,7 @@ def board_view():
 
     read_letters = [l for l in get_letters() if l["is_read"] == 1]
     if not read_letters:
-        st.info("아직 낭독된 편지가 없어요. 진행자가 읽음 처리하면 여기에 하나씩 올라와요.")
+        st.info("아직 낭독된 편지가 없어요.")
         return
 
     cols = st.columns(BOARD_COLUMNS)
@@ -292,7 +292,7 @@ def _sidebar_nav(current):
     """왼쪽 사이드바에 화면 이동 버튼. 참가자에겐 기본으로 접혀 있음."""
     with st.sidebar:
         st.markdown("### 🧭 화면 이동")
-        st.caption("진행자 / 빔 화면은 여기서 이동하세요.")
+        st.caption("진행자 / 참가자 / 게시판")
         if st.button("✍️ 편지 쓰기 (참가자)", use_container_width=True,
                      type="primary" if current == "submit" else "secondary"):
             st.query_params["mode"] = "submit"
@@ -301,7 +301,7 @@ def _sidebar_nav(current):
                      type="primary" if current == "host" else "secondary"):
             st.query_params["mode"] = "host"
             st.rerun()
-        if st.button("📮 대시보드 (빔)", use_container_width=True,
+        if st.button("📮 게시판", use_container_width=True,
                      type="primary" if current == "board" else "secondary"):
             st.query_params["mode"] = "board"
             st.rerun()
