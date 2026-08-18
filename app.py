@@ -157,7 +157,7 @@ def render_letter_card(letter, compact=False):
 
     # ★ HTML은 들여쓰기 없이 한 줄로 이어붙인다 (이게 핵심)
     card = (
-        f'<div style="background:#fff8e7;border-radius:16px;padding:{pad};'
+        f'<div style="background:#fff8e7;color:#3a2f10;border-radius:16px;padding:{pad};'
         f'margin-bottom:16px;border:1px solid #f0e0b0;font-size:{font};line-height:1.9;">'
         f'<div style="color:#8a6d1a;margin-bottom:12px;">{to_line}</div>'
         f'<div>{body}</div>'
