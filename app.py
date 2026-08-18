@@ -155,17 +155,14 @@ def render_letter_card(letter, compact=False):
     font = "1.0rem" if compact else "1.15rem"
     pad = "20px" if compact else "28px"
 
-    st.markdown(
-        f"""
-        <div style="background:#fff8e7;border-radius:16px;padding:{pad};margin-bottom:16px;
+    card=f"""<div style="background:#fff8e7;border-radius:16px;padding:{pad};margin-bottom:16px;
                     border:1px solid #f0e0b0;font-size:{font};line-height:1.9;">
             <div style="color:#8a6d1a;margin-bottom:12px;">{to_line}</div>
             <div style="white-space:pre-wrap;">{body}</div>
             <div style="text-align:right;margin-top:18px;color:#8a6d1a;">{from_line}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+        </div>"""
+    st.markdown(card,unsafe_allow_html=True)
+
 
 
 # ─────────────────────────────────────────────
