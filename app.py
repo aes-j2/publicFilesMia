@@ -1,15 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-익명 편지 라디오 앱 (v2)
-- 참가자: QR로 접속해서 익명으로 편지 제출        →  기본 주소
-- 진행자: 비밀번호로 들어가서 편지를 뽑아 낭독      →  주소 뒤에 ?mode=host
-- 대시보드: 낭독된 편지를 한꺼번에 띄우기 (빔용)   →  주소 뒤에 ?mode=board
-
-저장소:
-- 구글 시트 설정(secrets)이 있으면  → 구글 시트에 저장 (서버 재시작에도 안전)
-- 없으면                          → 로컬 letters.db 파일 (테스트용)
-
-실행: streamlit run app.py
 """
 
 import re
@@ -22,10 +12,10 @@ from datetime import datetime
 import streamlit as st
 
 # ─────────────────────────────────────────────
-# 설정 (여기만 바꾸면 됨)
+# 설정 
 # ─────────────────────────────────────────────
-DB_PATH = "letters.db"            # 로컬 저장 파일 (구글 시트 안 쓸 때)
-HOST_PASSWORD = "changeme1234"    # 진행자 비밀번호 → 꼭 바꾸세요!
+DB_PATH = "letters.db"            # 로컬 저장 파일 (구글 시트 안쓸때)
+HOST_PASSWORD = "changeme1234"    # 진행자 비밀번호
 EVENT_TITLE = "익명 편지함 📮"     # 화면 맨 위 제목
 BOARD_REFRESH_SEC = 20            # 대시보드 자동 새로고침 간격(초)
 BOARD_COLUMNS = 2                 # 대시보드 카드 열 개수
@@ -34,10 +24,9 @@ HEADER = ["id", "recipient", "sender", "body", "created_at", "is_read"]
 
 
 # ─────────────────────────────────────────────
-# 저장소: 구글 시트가 준비돼 있으면 그걸 쓰고, 아니면 SQLite
+# 저장소
 # ─────────────────────────────────────────────
 def _use_gsheets() -> bool:
-    """secrets에 구글 시트 정보가 있으면 True."""
     try:
         return ("gcp_service_account" in st.secrets) and ("spreadsheet" in st.secrets)
     except Exception:
@@ -46,7 +35,7 @@ def _use_gsheets() -> bool:
 
 @st.cache_resource
 def _get_worksheet():
-    """구글 시트에 딱 한 번만 접속해서 워크시트를 돌려준다."""
+    
     import gspread
     from google.oauth2.service_account import Credentials
 
@@ -64,7 +53,7 @@ def _get_worksheet():
     key = m.group(1) if m else url
     ws = client.open_by_key(key).sheet1
 
-    # 헤더가 없으면 만들어 둔다
+    # 헤더가 없으면 만들기
     if ws.row_values(1) != HEADER:
         ws.clear()
         ws.append_row(HEADER)
@@ -72,7 +61,7 @@ def _get_worksheet():
 
 
 def init_db():
-    """SQLite 테이블 준비 (구글 시트 쓰면 필요 없음)."""
+    """SQLite 테이블"""
     if _use_gsheets():
         return
     conn = sqlite3.connect(DB_PATH)
@@ -111,7 +100,7 @@ def add_letter(recipient, sender, body):
 
 
 def get_letters(only_unread=False):
-    """편지 목록을 최신순으로 돌려준다."""
+    """편지 목록을 최신순으로 리턴"""
     if _use_gsheets():
         records = _get_worksheet().get_all_records()  # [{header: value}, ...]
         letters = []
@@ -158,7 +147,6 @@ def mark_read(letter_id, read=True):
 # 편지 카드 (진행자/대시보드 공용)
 # ─────────────────────────────────────────────
 def render_letter_card(letter, compact=False):
-    """편지 하나를 예쁜 카드로 그린다. 사용자 입력은 이스케이프해서 안전하게."""
     to_raw = letter["recipient"].strip()
     from_raw = letter["sender"].strip()
     to_line = f"받는 사람: {html.escape(to_raw)}" if to_raw else "받는 사람: (익명)"
@@ -288,7 +276,7 @@ def board_view():
 # 메인: 화면 선택
 # ─────────────────────────────────────────────
 def _sidebar_nav(current):
-    """왼쪽 사이드바에 화면 이동 버튼. 참가자에겐 기본으로 접혀 있음."""
+    
     with st.sidebar:
         st.markdown("### 🧭 화면 이동")
         st.caption("진행자 / 참가자 / 게시판")
